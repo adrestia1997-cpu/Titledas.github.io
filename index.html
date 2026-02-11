@@ -155,7 +155,7 @@
             background: linear-gradient(135deg, #d4d4d4 0%, #a0a0a0 100%);
             color: white;
             position: fixed;
-            transition: all 0.15s ease-out;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         #noBtn:hover {
@@ -288,7 +288,7 @@
                 Math.pow(mouseY - buttonCenterY, 2)
             );
             
-            const minDistance = 100 + Math.max(buttonRect.width, buttonRect.height) / 2;
+            const minDistance = 150 + Math.max(buttonRect.width, buttonRect.height) / 2;
             
             if (distance < minDistance) {
                 moveButtonAway(mouseX, mouseY, buttonRect);
@@ -304,13 +304,21 @@
             
             const angle = Math.atan2(buttonCenterY - mouseY, buttonCenterX - mouseX);
             
-            // Move button 150px away in the opposite direction
-            const moveDistance = 150;
+            // Calculate current distance
+            const currentDistance = Math.sqrt(
+                Math.pow(mouseX - buttonCenterX, 2) + 
+                Math.pow(mouseY - buttonCenterY, 2)
+            );
+            
+            // Smooth, proportional movement - closer cursor = bigger jump
+            const minDistance = 150;
+            const moveDistance = Math.min(200, (minDistance - currentDistance) * 1.5 + 100);
+            
             let newX = buttonCenterX + Math.cos(angle) * moveDistance;
             let newY = buttonCenterY + Math.sin(angle) * moveDistance;
             
             // Define safe boundaries
-            const margin = 100;
+            const margin = 120;
             const minX = margin + buttonRect.width / 2;
             const maxX = window.innerWidth - margin - buttonRect.width / 2;
             const minY = margin + buttonRect.height / 2;
@@ -323,7 +331,7 @@
                 wouldBeTrapped = true;
             }
             
-            // If trapped or cornered, teleport to opposite corner/side
+            // If trapped or cornered, teleport to opposite corner/side with smooth transition
             if (wouldBeTrapped) {
                 // Calculate which quadrant the mouse is in
                 const centerX = window.innerWidth / 2;
@@ -353,7 +361,7 @@
                 newY = Math.max(minY, Math.min(maxY, newY));
             }
             
-            // Set position (adjust for button center)
+            // Set position with smooth transition
             button.style.left = (newX - buttonRect.width / 2) + 'px';
             button.style.top = (newY - buttonRect.height / 2) + 'px';
             button.style.position = 'fixed';
@@ -397,7 +405,7 @@
                     confetti.className = 'confetti';
                     confetti.style.left = Math.random() * window.innerWidth + 'px';
                     confetti.style.top = '-10px';
-                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length);
                     confetti.style.width = (Math.random() * 10 + 5) + 'px';
                     confetti.style.height = (Math.random() * 10 + 5) + 'px';
                     confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
