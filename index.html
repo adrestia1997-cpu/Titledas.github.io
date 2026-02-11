@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine? 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe5f0 50%, #ffd6e8 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Floating hearts background */
+        .heart-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 30px;
+            animation: float 15s infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            background: white;
+            padding: 60px 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3);
+            text-align: center;
+            max-width: 500px;
+            position: relative;
+            z-index: 1;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gif-container {
+            margin-bottom: 30px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .gif-container img {
+            width: 200px;
+            height: 200px;
+            border-radius: 20px;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
+        }
+
+        h1 {
+            color: #ff1493;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .question {
+            font-size: 1.5em;
+            color: #ff69b4;
+            margin-bottom: 40px;
+            font-weight: 500;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            min-height: 100px;
+            position: relative;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #yesBtn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff1493 100%);
+            color: white;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 20, 147, 0.4);
+        }
+
+        #noBtn {
+            background: linear-gradient(135deg, #d4d4d4 0%, #a0a0a0 100%);
+            color: white;
+            position: fixed;
+            transition: all 0.15s ease-out;
+        }
+
+        #noBtn:hover {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff1493 100%);
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ff1493;
+            position: absolute;
+            animation: confetti-fall 3s linear;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .success-message {
+            display: none;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .success-message h2 {
+            color: #ff1493;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .success-message p {
+            color: #ff69b4;
+            font-size: 1.3em;
+        }
+
+        .heart-icon {
+            font-size: 3em;
+            animation: heartbeat 1s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            25% {
+                transform: scale(1.2);
+            }
+            50% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="heart-bg" id="heartBg"></div>
+    
+    <div class="container">
+        <div id="questionSection">
+            <div class="gif-container">
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcjBtN3JxZG9iNjdzaGN5OG50bGt4ZG5iOHE4bHRqeWE2MHdocmVvZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MDJ9IbxxvDUQM/giphy.gif" alt="Cute heart animation">
+            </div>
+            
+            <h1>💖 Hey Handsome! 💖</h1>
+            
+            <p class="question">Will you be my Valentine? 🌹</p>
+            
+            <div class="buttons" id="buttonContainer">
+                <button id="yesBtn" onclick="handleYes()">Yes 💕</button>
+                <button id="noBtn" onclick="convertToYes()">No 😢</button>
+            </div>
+        </div>
+
+        <div id="successMessage" class="success-message">
+            <div class="heart-icon">💝</div>
+            <h2>Yay! I knew you'd say yes! 🎉</h2>
+            <p>You've made me the happiest! 💕</p>
+            <p style="margin-top: 20px; font-size: 1.1em;">I love you so much! ❤️</p>
+        </div>
+    </div>
+
+    <script>
+        // Create floating hearts background
+        function createFloatingHearts() {
+            const heartBg = document.getElementById('heartBg');
+            const hearts = ['💕', '💖', '💗', '💓', '💝', '❤️', '🌹'];
+            
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 15 + 's';
+                heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                heartBg.appendChild(heart);
+            }
+        }
+
+        createFloatingHearts();
+
+        // Move the No button away from cursor continuously
+        let noButton = document.getElementById('noBtn');
+        let isTracking = false;
+
+        function checkDistance(mouseX, mouseY) {
+            const button = noButton;
+            const buttonRect = button.getBoundingClientRect();
+            const buttonCenterX = buttonRect.left + buttonRect.width / 2;
+            const buttonCenterY = buttonRect.top + buttonRect.height / 2;
+            
+            const distance = Math.sqrt(
+                Math.pow(mouseX - buttonCenterX, 2) + 
+                Math.pow(mouseY - buttonCenterY, 2)
+            );
+            
+            const minDistance = 100 + Math.max(buttonRect.width, buttonRect.height) / 2;
+            
+            if (distance < minDistance) {
+                moveButtonAway(mouseX, mouseY, buttonRect);
+            }
+        }
+
+        function moveButtonAway(mouseX, mouseY, buttonRect) {
+            const button = noButton;
+            
+            // Calculate direction away from cursor
+            const buttonCenterX = buttonRect.left + buttonRect.width / 2;
+            const buttonCenterY = buttonRect.top + buttonRect.height / 2;
+            
+            const angle = Math.atan2(buttonCenterY - mouseY, buttonCenterX - mouseX);
+            
+            // Move button 150px away in the opposite direction
+            const moveDistance = 150;
+            let newX = buttonCenterX + Math.cos(angle) * moveDistance;
+            let newY = buttonCenterY + Math.sin(angle) * moveDistance;
+            
+            // Define safe boundaries
+            const margin = 100;
+            const minX = margin + buttonRect.width / 2;
+            const maxX = window.innerWidth - margin - buttonRect.width / 2;
+            const minY = margin + buttonRect.height / 2;
+            const maxY = window.innerHeight - margin - buttonRect.height / 2;
+            
+            // Check if button would be cornered or trapped
+            let wouldBeTrapped = false;
+            
+            if (newX < minX || newX > maxX || newY < minY || newY > maxY) {
+                wouldBeTrapped = true;
+            }
+            
+            // If trapped or cornered, teleport to opposite corner/side
+            if (wouldBeTrapped) {
+                // Calculate which quadrant the mouse is in
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                
+                // Place button in the quadrant farthest from mouse
+                if (mouseX < centerX && mouseY < centerY) {
+                    // Mouse in top-left, put button in bottom-right
+                    newX = window.innerWidth - margin - buttonRect.width;
+                    newY = window.innerHeight - margin - buttonRect.height;
+                } else if (mouseX >= centerX && mouseY < centerY) {
+                    // Mouse in top-right, put button in bottom-left
+                    newX = margin + buttonRect.width;
+                    newY = window.innerHeight - margin - buttonRect.height;
+                } else if (mouseX < centerX && mouseY >= centerY) {
+                    // Mouse in bottom-left, put button in top-right
+                    newX = window.innerWidth - margin - buttonRect.width;
+                    newY = margin + buttonRect.height;
+                } else {
+                    // Mouse in bottom-right, put button in top-left
+                    newX = margin + buttonRect.width;
+                    newY = margin + buttonRect.height;
+                }
+            } else {
+                // Keep button within safe viewport
+                newX = Math.max(minX, Math.min(maxX, newX));
+                newY = Math.max(minY, Math.min(maxY, newY));
+            }
+            
+            // Set position (adjust for button center)
+            button.style.left = (newX - buttonRect.width / 2) + 'px';
+            button.style.top = (newY - buttonRect.height / 2) + 'px';
+            button.style.position = 'fixed';
+        }
+
+        // Track mouse movement
+        document.addEventListener('mousemove', (e) => {
+            if (document.getElementById('questionSection').style.display !== 'none') {
+                checkDistance(e.clientX, e.clientY);
+            }
+        });
+
+        function moveButton(event) {
+            // This function is now handled by the mousemove listener
+        }
+
+        // Convert No to Yes on click
+        function convertToYes() {
+            handleYes();
+        }
+
+        // Handle Yes button click
+        function handleYes() {
+            const questionSection = document.getElementById('questionSection');
+            const successMessage = document.getElementById('successMessage');
+            
+            questionSection.style.display = 'none';
+            successMessage.style.display = 'block';
+            
+            createConfetti();
+        }
+
+        // Create confetti explosion
+        function createConfetti() {
+            const colors = ['#ff1493', '#ff69b4', '#ff85c1', '#ffc0cb', '#ff6b9d', '#c71585'];
+            const confettiCount = 150;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                    confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }, i * 10);
+            }
+        }
+    </script>
+</body>
+</html>
